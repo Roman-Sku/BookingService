@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	Ticket
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="text-center">
+            <h2 class="display-5 link-body-emphasis mb-1">flight/{{flight.airline.airline_name}}/{{flight.id}}</h2>
+
+        <hr>
+
+        <div>
+            Имя: {{ user.last_name}} {{ user.first_name }}
+        </div>
+
+        <div>
+            Страна, город вылета: {{ flight.departure_airport.country }}, {{ flight.departure_airport.city }}
+        </div>
+
+        <div>
+            Страна, город прибытия: {{ flight.arrival_airport.country }}, {{ flight.arrival_airport.city }}
+        </div>
+
+        <div>
+            Аэропорт вылета: {{ flight.departure_airport.airport_name}}
+        </div>
+
+        <div>
+            Аэропорт прибытия: {{ flight.arrival_airport.airport_name}}
+        </div>
+
+        <div>
+            Время вылета: {{ flight.departure_date_time }}
+        </div>
+
+        <div>
+            Время прибытия: {{ flight.arrival_date_time }}
+        </div>
+
+        </div>
+
+        <div>
+            Авиакомпания: {{ flight.airline.airline_name }}
+        </div>
+
+    </div>
+
+{% endblock %}

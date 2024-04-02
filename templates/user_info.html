@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	Profile
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="text-center">
+            <h2 class="display-5 link-body-emphasis mb-1">Профиль пользователя {{ user.username}}</h2>
+
+        </div>
+
+        <hr>
+
+
+        <div>
+            {{ user.last_name}} {{ user.first_name }}
+        </div>
+
+        <div>
+            Электронная почта: {{ user.email }}
+        </div>
+
+        <div>
+            Номер телефона: {{ user.phone }}
+        </div>
+
+        <div>
+            Адрес: {{ user.adress }}
+        </div>
+
+
+    </div>
+
+{% endblock %}
