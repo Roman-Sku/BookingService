@@ -8,9 +8,10 @@ from django.contrib.auth.decorators import login_required
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.views import View
+from django.db.transaction import atomic
 
-from .email import ConfirmUserRegisterEmailSender
-from .forms import RegisterForm
+from .email import ConfirmUserRegisterEmailSender, send_mail
+from .forms import RegisterForm, BookingForm, EmailForm
 from .models import Flight, Airline, Airport, User, Order, Review
 
 
@@ -103,12 +104,27 @@ def book_ticket_view(request: WSGIRequest, flight_id: str):
     return render(request, 'book_ticket.html', {'flight': flight})
 
 
+@atomic
 def book_ticket(request: WSGIRequest, flight_id: int):
-    if request.method == "POST":
-        flight: Flight = Flight.objects.get(id=flight_id)
-        flight.available_seats = request.POST.get("available_seats")
-        flight.available_seats -= 1
-        flight.save(update_fields=["available_seats"])
-        flight: Flight = Flight.objects.get(id=flight_id)
+    flight = get_object_or_404(Flight, pk=flight_id)
+    form = BookingForm()
+    user = request.user
 
-        return render(request, 'ticket.html', {'flight': flight})
+    if request.method == 'POST':
+        form = BookingForm(request.POST, initial={'flight': flight})
+        if form.is_valid():
+            count = form.cleaned_data['count']
+            flight.available_seats -= count
+            order = Order.objects.create(
+                flight=flight,
+                user=request.user,
+                seats_booked=count,
+                total_price=flight.price*count,
+            )
+            flight.save(update_fields=["available_seats"])
+
+            send_mail(order=order, username=user.username)
+
+            return render(request, 'ticket.html', {"flight": flight, 'order': order})
+
+    return render(request, 'flight.html', {'booking_form': form, 'flight': flight})

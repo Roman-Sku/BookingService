@@ -6,7 +6,6 @@
 
 {% block content %}
 
-    <form action="{% url 'book-ticket' flight.id %}" method="post">
 
     <div class="container">
         <div class="text-center">
@@ -53,12 +52,19 @@
             <a href="https://www.aviasales.by/?params=MSQ1">{{flight.airline.website}}</a>
         </div>
 
-
-            <button type="submit" class="btn btn-outline-primary">Отправить</button>
+    <div>
+        <form action="{% url 'book-ticket' flight.id %}" method="post">
+            {% csrf_token %}
+            <div>
+                <label for="count" class="form-label">Кол-во билетов</label>
+                <input name="count" value="1" type="number" min="1" class="form-control" id="count">
+                {{ booking_form.errors }}
+            </div>
+            <button type="submit" class="btn btn-outline-primary">Забронировать</button>
+        </form>
     </div>
 
-    </form>
 
-
+ </div>
 
 {% endblock %}

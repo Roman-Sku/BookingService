@@ -28,7 +28,5 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('register/confirm/<id>/<token>', views.confirm_register_view, name='register-confirm'),
     path('user_info/<user_username>', views.user_info_view, name='user-info'),
-    path('ticket/<int:flight_id>', views.book_ticket, name='book-ticket')
+    path('ticket/<int:flight_id>', views.book_ticket, name='book-ticket'),
 ]
-
-#  TODO доделать выход из аккаунта

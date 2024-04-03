@@ -12,6 +12,9 @@ class Airport(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
 
+    def __str__(self):
+        return self.airport_name
+
     class Meta:
         db_table = 'airports'
 
@@ -21,6 +24,9 @@ class Airline(models.Model):
     contact_info = models.CharField(max_length=255)
     website = models.CharField(max_length=255, null=True, blank=True)
 
+    def __str__(self):
+        return self.airline_name
+
     class Meta:
         db_table = 'airlines'
 
@@ -28,6 +34,9 @@ class Airline(models.Model):
 class User(AbstractUser):
     phone = models.CharField(max_length=20, null=True, blank=True, unique=True)
     adress = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.username
 
     class Meta:
         db_table = 'users'
@@ -42,6 +51,9 @@ class Flight(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     available_seats = models.IntegerField()
 
+    def __str__(self):
+        return self.id
+
     class Meta:
         db_table = 'flights'
         ordering = ['-departure_date_time']
@@ -52,7 +64,10 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     seats_booked = models.IntegerField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    booking_date_time = models.DateTimeField()
+    booking_date_time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'Бронь №'+str(self.id)
 
     class Meta:
         db_table = 'orders'
@@ -63,6 +78,9 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.IntegerField()
     comment = models.TextField(max_length=1000, null=True, blank=True)
+
+    def __str__(self):
+        return 'Отзыв о рейсе№'+str(self.flight.id)
 
     class Meta:
         db_table = 'reviews'

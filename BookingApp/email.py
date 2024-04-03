@@ -6,6 +6,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 
+from BookingApp.models import User
+
 
 class BaseEmailSender:
     template_name = None
@@ -62,4 +64,21 @@ class ConfirmUserRegisterEmailSender(BaseEmailSender):
     subject = "Подтвердите регистрацию"
 
 
+def send_mail(order, username: str):
+    user: User = User.objects.get(username=username)
+    user_email = user.email
 
+    email = EmailMultiAlternatives(
+        subject='Ваш билет',
+        to=[user_email]
+    )
+
+    context: dict = {
+        "order": order,
+        "user": user,
+    }
+
+    content = render_to_string('ticket-email.html', context)
+
+    email.attach_alternative(content, "text/html")
+    email.send()

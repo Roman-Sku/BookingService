@@ -28,10 +28,22 @@ class RegisterForm(forms.Form):
         return data
 
 
-# class BookingForm(forms.Form, forms.ModelForm):
-#     amount_of_tickets = forms.IntegerField(min_value=1, max_value=flight.available_seats)
-#     class Meta:
-#         model = Flight
-#     fields = ['airline', 'departure_airport', 'arrival_airport', 'departure_date_time', 'arrival_date_time',
-#               'available_seat', 'price']
-# # TODO: для max_value как то дать значение flight.available_seats
+class BookingForm(forms.Form):
+    count = forms.IntegerField(min_value=1, max_value=1220, required=True)
+
+    def clean_count(self):
+        flight: Flight = self.initial['flight']
+        count: int = self.cleaned_data['count']
+        if count > flight.available_seats:
+            raise forms.ValidationError("Количество билетов превышает допустимое")
+        return count
+
+
+class EmailForm(forms.Form):
+    email = forms.EmailField(max_length=254)
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            return email
+        raise forms.ValidationError("Пользователя с таким email не существует")

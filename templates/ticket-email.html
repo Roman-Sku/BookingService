@@ -1,0 +1,10 @@
+    <p>Вы купили билетов: {{ order.seats_booked }} <br> на сумму {{ order.total_price }}$</p>
+    <br>
+    <p>Имя: {{ user.last_name }} {{ user.first_name }}</p>
+    <p>Страна, город вылета: {{ order.flight.departure_airport.country }}, {{ order.flight.departure_airport.city }}</p>
+    <p>Страна, город прибытия: {{ order.flight.arrival_airport.country }}, {{ order.flight.arrival_airport.city }}</p>
+    <p>Аэропорт вылета: {{ order.flight.departure_airport.airport_name }}</p>
+    <p>Аэропорт прибытия: {{ order.flight.arrival_airport.airport_name }}</p>
+    <p>Время вылета: {{ order.flight.departure_date_time }}</p>
+    <p>Время прибытия: {{ order.flight.arrival_date_time }}</p>
+    <p>Авиакомпкания: {{ order.flight.airline.airline_name }}</p>
