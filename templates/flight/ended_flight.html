@@ -1,0 +1,57 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+	BookingService
+{% endblock %}
+
+{% block content %}
+
+
+    <div class="container">
+        <div class="text-center">
+            <h2 class="display-5 link-body-emphasis mb-1">{{ flight.departure_airport.country }}, {{ flight.departure_airport.city }} - {{ flight.arrival_airport.country }}, {{ flight.arrival_airport.city }}</h2>
+
+        </div>
+
+        <hr>
+
+
+        <div>
+            Отправление <em>{{flight.departure_date_time}}</em> из аэропорта "<em>{{ flight.departure_airport.airport_name }}</em>"
+        </div>
+
+        <div>
+            Прибытие <em>{{flight.arrival_date_time}}</em> в аэропорт "<em>{{ flight.arrival_airport.airport_name }}</em>"
+        </div>
+
+        <hr>
+
+        <div>
+            Цена за билет: <em>{{flight.price}}</em>$
+        </div>
+
+        <div>
+            Количество свободных мест: <em>{{flight.available_seats}}</em>
+        </div>
+
+        <hr>
+
+        <div class="text-center">
+            <h4> <p class="blog-post-meta">Авиакомпания: {{ flight.airline.airline_name }} </p> </h4>
+        </div>
+
+        <div>
+            Контакты:
+        </div>
+
+        <div>
+            {{flight.airline.contact_info}}
+        </div>
+
+        <div>
+            <a href="https://www.aviasales.by/?params=MSQ1">{{flight.airline.website}}</a>
+        </div>
+
+ </div>
+
+{% endblock %}
