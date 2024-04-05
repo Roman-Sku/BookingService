@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base/base.html' %}
 {% load static %}
 
 {% block title %}
@@ -15,9 +15,9 @@
 
     <div class="container">
 
-        {% include 'welcome.html' %}
+        {% include 'base/welcome.html' %}
 
-        {% include 'flights-list.html' %}
+        {% include 'base/flights-list.html' %}
     </div>
 
 {% endblock %}

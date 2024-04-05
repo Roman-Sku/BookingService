@@ -1,60 +1,66 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseForbidden, HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.urls import reverse
-from django.db.models import Q, Case, When
 from django.core.handlers.wsgi import WSGIRequest
 from django.contrib.auth.decorators import login_required
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
-from django.views import View
 from django.db.transaction import atomic
+from django.utils import timezone
 
 from .email import ConfirmUserRegisterEmailSender, send_mail
-from .forms import RegisterForm, BookingForm, EmailForm
+from .forms import RegisterForm, BookingForm
 from .models import Flight, Airline, Airport, User, Order, Review
 
 
 def home_page_view(request: WSGIRequest):
+    """ Домашняя страница """
     flights = Flight.objects.all()
     context: dict = {
         'flights': flights
     }
-    return render(request, 'home.html', context)
+    return render(request, 'base/home.html', context)
 
-
-# TODO: def
 
 def filter_flights_view(request: WSGIRequest):
+    """ Поиск """
     search: str = request.GET.get('search', '')
 
     if search:
         flight_queryset = Flight.objects.filter(arrival_date_time__icontains=search)
     else:
-        flight_queryset = Flight.objects.all()
+        return HttpResponseRedirect(reverse('home'))
 
     context: dict = {
         'flight_queryset': flight_queryset,
         'search_value_form': search,
     }
-    return render(request, 'home.html', context)  # TODO: пофиксить поиск при пустом значении строки search
+    return render(request, 'base/home.html', context)
 
 
 def show_flight_view(request: WSGIRequest, flight_id):
+    """ Информация о рейсе """
     try:
         flight: Flight = Flight.objects.get(id=flight_id)
 
     except Flight.DoesNotExist:
         raise Http404
 
-    return render(request, 'flight.html', {'flight': flight})
+    if flight.departure_date_time < timezone.now():
+        return render(request, 'flight/ended_flight.html', {'flight': flight})
+
+    else:
+        return render(request, 'flight/flight.html', {'flight': flight})
 
 
 def info_view(request: WSGIRequest):
-    return render(request, 'info.html')
+    """ Информация о сайте """
+    return render(request, 'base/info.html')
 
 
 def register_view(request: WSGIRequest):
+    """ Страница регистрации """
     form = RegisterForm()
 
     if request.method == 'POST':
@@ -75,6 +81,7 @@ def register_view(request: WSGIRequest):
 
 
 def confirm_register_view(request: WSGIRequest, id: str, token: str):
+    """ Подтверждение регистрации """
     username = force_str(urlsafe_base64_decode(id))
 
     user = get_object_or_404(User, username=username)
@@ -87,25 +94,19 @@ def confirm_register_view(request: WSGIRequest, id: str, token: str):
 
 
 def user_info_view(request: WSGIRequest, user_username):
+    """ Информация о пользователе """
     try:
         user: User = User.objects.get(username=user_username)
 
     except User.DoesNotExist:
         raise Http404
 
-    return render(request, 'user_info.html', {'user': user})
-
-
-def book_ticket_view(request: WSGIRequest, flight_id: str):
-    try:
-        flight: Flight = Flight.objects.get(flight_id=flight_id)
-    except Flight.DoesNotExist:
-        raise Http404
-    return render(request, 'book_ticket.html', {'flight': flight})
+    return render(request, 'user/user_info.html', {'user': user})
 
 
 @atomic
 def book_ticket(request: WSGIRequest, flight_id: int):
+    """ Бронирвание билета """
     flight = get_object_or_404(Flight, pk=flight_id)
     form = BookingForm()
     user = request.user
@@ -125,6 +126,30 @@ def book_ticket(request: WSGIRequest, flight_id: int):
 
             send_mail(order=order, username=user.username)
 
-            return render(request, 'ticket.html', {"flight": flight, 'order': order})
+            return render(request, 'ticket/ticket.html', {"flight": flight, 'order': order})
 
-    return render(request, 'flight.html', {'booking_form': form, 'flight': flight})
+    return render(request, 'flight/flight.html', {'booking_form': form, 'flight': flight})
+
+
+@atomic
+def cancel_order(request: WSGIRequest, order_id: int):
+    """ Отмена брони """
+    order: Order = Order.objects.get(id=order_id)
+    order.flight.available_seats += order.seats_booked
+    order.flight.save(update_fields=["available_seats"])
+    order.delete()
+    return HttpResponseRedirect(reverse('home'))
+
+
+def filter_future_orders(request: WSGIRequest):
+    """ Страница с забранированными рейсами """
+    orders = Order.objects.filter(flight__departure_date_time__gt=timezone.now())
+    context: dict = {'orders': orders}
+    return render(request, 'flight/future_flights.html', context)
+
+
+def filter_ended_orders(request: WSGIRequest):
+    """ Страница с забранированными рейсами, которые уже сбылись """
+    orders = Order.objects.filter(flight__departure_date_time__lt=timezone.now())
+    context: dict = {'orders': orders}
+    return render(request, 'flight/ended_flights.html', context)

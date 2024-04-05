@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base/base.html' %}
 
 {% block title %}
 	Ticket
@@ -7,15 +7,15 @@
 {% block content %}
     <div class="container">
         <h2 class="text-center display-5 link-body-emphasis mb-1">flight/{{flight.airline.airline_name}}/{{flight.id}}</h2>
-    
+
         <div class=" d-flex align-items-center">
             <div>
                 <img src="https://scontent-fra3-1.xx.fbcdn.net/v/t1.6435-9/142760079_3699032313497963_5508409583844015064_n.png?_nc_cat=101&ccb=1-7&_nc_sid=5f2048&_nc_ohc=qEmqHHJVeMsAX-JNXs_&_nc_ht=scontent-fra3-1.xx&oh=00_AfDsz8EJtwpqMVuruukJAlLguoTJPLv7NP0tXsXAAX_a6Q&oe=6633C575" height="500">
             </div>
-            
+
             <div>
                 <h3>Вы купили билетов: {{ order.seats_booked }} <br> на сумму {{ order.total_price }}$</h3>
-                
+
                 <div>Имя: {{ user.last_name }} {{ user.first_name }}</div>
                 <div>Страна, город вылета: {{ flight.departure_airport.country }}, {{ flight.departure_airport.city }}</div>
                 <div>Страна, город прибытия: {{ flight.arrival_airport.country }}, {{ flight.arrival_airport.city }}</div>
@@ -25,10 +25,20 @@
                 <div>Время прибытия: {{ flight.arrivval_date_time }}</div>
                 <div>Авиакомпкания: {{ flight.airline.airline_name }}</div>
             </div>
-            
 
-            
+
+
+
+
+
         </div>
     </div>
-    
+
+            <div class="container text-center">
+                <form action="{% url 'cancel-order' order.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Отменить бронь</button>
+                </form>
+            </div>
+
 {% endblock %}

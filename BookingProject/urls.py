@@ -21,6 +21,7 @@ from BookingApp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include("django.contrib.auth.urls")),
+
     path('', views.home_page_view, name='home'),
     path('filter', views.filter_flights_view, name='filter-flights'),
     path('flight/<int:flight_id>', views.show_flight_view, name='show-flight'),
@@ -29,4 +30,7 @@ urlpatterns = [
     path('register/confirm/<id>/<token>', views.confirm_register_view, name='register-confirm'),
     path('user_info/<user_username>', views.user_info_view, name='user-info'),
     path('ticket/<int:flight_id>', views.book_ticket, name='book-ticket'),
+    path('cancel/<int:order_id>', views.cancel_order, name='cancel-order'),
+    path('future/orders', views.filter_future_orders, name='future-orders'),
+    path('ended_flights', views.filter_ended_orders, name='ended-orders'),
 ]

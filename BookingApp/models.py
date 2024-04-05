@@ -1,7 +1,4 @@
-import pathlib
-
 from django.db import models
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 
 
@@ -52,7 +49,7 @@ class Flight(models.Model):
     available_seats = models.IntegerField()
 
     def __str__(self):
-        return self.id
+        return str(self.arrival_airport.country)
 
     class Meta:
         db_table = 'flights'

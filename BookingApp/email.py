@@ -65,6 +65,10 @@ class ConfirmUserRegisterEmailSender(BaseEmailSender):
 
 
 def send_mail(order, username: str):
+    """
+    Отправка билета на почту.
+    """
+
     user: User = User.objects.get(username=username)
     user_email = user.email
 
@@ -78,7 +82,7 @@ def send_mail(order, username: str):
         "user": user,
     }
 
-    content = render_to_string('ticket-email.html', context)
+    content = render_to_string('ticket/ticket-email.html', context)
 
     email.attach_alternative(content, "text/html")
     email.send()

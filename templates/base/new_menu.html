@@ -34,6 +34,10 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'user-info' user.username %}">{{ user.username }}</a>
         </li>
+          
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'future-orders' %}">Мои путешествия</a>
+        </li>  
 
 
       {% else %}
@@ -48,6 +52,7 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'register' %}">Зарегистрироваться</a>
         </li>
+        
 
 
       {% endif %}
