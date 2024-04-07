@@ -51,7 +51,19 @@
         <div>
             <a href="https://www.aviasales.by/?params=MSQ1">{{flight.airline.website}}</a>
         </div>
+        <hr>
 
- </div>
+    </div>
+
+    
+<div class="text-center container">
+    <div class="btn btn-outline-primary">
+        <a href="{% url 'show-reviews' flight.id %}">Отзывы</a>
+    </div>
+    <div class="btn btn-outline-primary">
+        <a href="{% url 'make-review' flight.id %}">Написать отзыв</a>
+    </div>
+</div>
+
 
 {% endblock %}

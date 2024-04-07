@@ -10,7 +10,7 @@ from django.db.transaction import atomic
 from django.utils import timezone
 
 from .email import ConfirmUserRegisterEmailSender, send_mail
-from .forms import RegisterForm, BookingForm
+from .forms import RegisterForm, BookingForm, ReviewForm
 from .models import Flight, Airline, Airport, User, Order, Review
 
 
@@ -153,3 +153,36 @@ def filter_ended_orders(request: WSGIRequest):
     orders = Order.objects.filter(flight__departure_date_time__lt=timezone.now())
     context: dict = {'orders': orders}
     return render(request, 'flight/ended_flights.html', context)
+
+
+def make_review(request: WSGIRequest, flight_id: int):
+    """ Написание отзыва к сбывшемуся рейсу """
+    flight = get_object_or_404(Flight, pk=flight_id)
+    form = ReviewForm()
+    user = request.user
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            rating = form.cleaned_data['rating']
+            comment = form.cleaned_data['comment']
+            review = Review.objects.create(
+                flight=flight,
+                user=user,
+                rating=rating,
+                comment=comment,
+            )
+            review.save()
+            return render(request, 'review/review.html', {'review': review})
+
+    return render(request, 'review/make-review.html', {'form': form, 'flight': flight})
+
+
+def show_review(request: WSGIRequest, review_id: int):
+    review = get_object_or_404(Review, pk=review_id)
+    return render(request, 'review/review.html', {'review': review})
+
+
+def show_flight_reviews(request: WSGIRequest, flight_id: int):
+    """ Все отзывы о рейсе """
+    reviews = Review.objects.filter(flight_id=flight_id)
+    return render(request, 'review/reviews-list.html', {'reviews': reviews})

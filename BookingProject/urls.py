@@ -33,4 +33,7 @@ urlpatterns = [
     path('cancel/<int:order_id>', views.cancel_order, name='cancel-order'),
     path('future/orders', views.filter_future_orders, name='future-orders'),
     path('ended_flights', views.filter_ended_orders, name='ended-orders'),
+    path('make_review/<int:flight_id>', views.make_review, name='make-review'),
+    path('review/<int:review_id>', views.show_review, name='review'),
+    path('<int:flight_id>/review', views.show_flight_reviews, name='show-reviews'),
 ]

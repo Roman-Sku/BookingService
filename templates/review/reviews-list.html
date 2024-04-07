@@ -1,0 +1,30 @@
+{% extends 'base/base.html' %}
+
+
+{% block content %}
+    <hr>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+
+    {% for review in reviews %} {# ❗Обращение к базе❗️#}
+      <div class="col">
+        <div class="card shadow">
+          <div class="card-body">
+              <h5 class="card-title">
+                  <a class="text-dark text-decoration-none" href="{% url 'review' review.id %}">{{ review.user }}</a>
+              </h5>
+                <p class="card-text my-3">
+                    Оценка: {{ review.rating }}
+                </p>
+
+                <p>
+                    Коментарий: ...
+                </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

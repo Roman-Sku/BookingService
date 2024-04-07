@@ -70,6 +70,20 @@ files = [
 django = ">=4.2"
 
 [[package]]
+name = "djangorestframework"
+version = "3.15.1"
+description = "Web APIs for Django, made easy."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "djangorestframework-3.15.1-py3-none-any.whl", hash = "sha256:3ccc0475bce968608cf30d07fb17d8e52d1d7fc8bfe779c905463200750cbca6"},
+    {file = "djangorestframework-3.15.1.tar.gz", hash = "sha256:f88fad74183dfc7144b2756d0d2ac716ea5b4c7c9840995ac3bfd8ec034333c1"},
+]
+
+[package.dependencies]
+django = ">=3.0"
+
+[[package]]
 name = "postgres"
 version = "4.0"
 description = "postgres is a high-value abstraction over psycopg2."
@@ -220,4 +234,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "efb342bbdc70e1c7a11d392b5a4567ed8741ccb94dbfe0d70421dbfae935f2b7"
+content-hash = "003335aa49eba4d179100879f2ed753511867c62626f8b5b6c9f743ab1e979aa"

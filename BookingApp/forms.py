@@ -47,3 +47,9 @@ class EmailForm(forms.Form):
         if User.objects.filter(email=email).exists():
             return email
         raise forms.ValidationError("Пользователя с таким email не существует")
+
+
+class ReviewForm(forms.Form):
+    rating = forms.IntegerField(min_value=1, max_value=5, required=True, label='Оценка')
+    comment = forms.CharField(max_length=1000, required=False, label='Комментарий')
+
