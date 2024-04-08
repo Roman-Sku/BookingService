@@ -8,6 +8,7 @@ from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.db.transaction import atomic
 from django.utils import timezone
+from django.db.models import Q
 
 from .email import ConfirmUserRegisterEmailSender, send_mail
 from .forms import RegisterForm, BookingForm, ReviewForm
@@ -16,7 +17,7 @@ from .models import Flight, Airline, Airport, User, Order, Review
 
 def home_page_view(request: WSGIRequest):
     """ Домашняя страница """
-    flights = Flight.objects.all()
+    flights = Flight.objects.filter(departure_date_time__gt=timezone.now())
     context: dict = {
         'flights': flights
     }
@@ -28,7 +29,7 @@ def filter_flights_view(request: WSGIRequest):
     search: str = request.GET.get('search', '')
 
     if search:
-        flight_queryset = Flight.objects.filter(arrival_date_time__icontains=search)
+        flight_queryset = Flight.objects.filter(Q(arrival_airport__country__search=search) | Q(departure_airport__country__search=search))
     else:
         return HttpResponseRedirect(reverse('home'))
 
@@ -182,7 +183,12 @@ def show_review(request: WSGIRequest, review_id: int):
     return render(request, 'review/review.html', {'review': review})
 
 
-def show_flight_reviews(request: WSGIRequest, flight_id: int):
+def show_airline_reviews(request: WSGIRequest, airline_id: int):
     """ Все отзывы о рейсе """
-    reviews = Review.objects.filter(flight_id=flight_id)
+    reviews = Review.objects.filter(flight__airline_id=airline_id)
     return render(request, 'review/reviews-list.html', {'reviews': reviews})
+
+
+def airline_view(request: WSGIRequest, airline_id: int):
+    airline = get_object_or_404(Airline, pk=airline_id)
+    return render(request, 'airline/airline_info.html', {'airline': airline})

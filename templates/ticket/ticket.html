@@ -23,7 +23,7 @@
                 <div>Аэропорт прибытия: {{ flight.arrival_airport.airport_name }}</div>
                 <div>Время вылета: {{ flight.departure_date_time }}</div>
                 <div>Время прибытия: {{ flight.arrivval_date_time }}</div>
-                <div>Авиакомпкания: {{ flight.airline.airline_name }}</div>
+                <div>Авиакомпкания: <a href="{% url 'show-airline' flight.airline.id %}">{{ flight.airline.airline_name }}</a></div>
             </div>
 
 

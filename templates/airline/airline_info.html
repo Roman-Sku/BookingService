@@ -1,0 +1,35 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+	BookingService
+{% endblock %}
+
+{% block content %}
+
+
+    <div class="container">
+        <div class="text-center">
+            <h2 class="display-5 link-body-emphasis mb-1">{{ airline.airline_name }}</h2>
+
+        </div>
+
+        <hr>
+
+
+        <div>
+            Контактная информация: airline.contact_info
+        </div>
+
+        <div>
+            Подробнее на нашем <a href="{{ airline.website }}">сайте</a>
+        </div>
+
+<div class="text-center container">
+    <div class="btn btn-outline-primary">
+        <a href="{% url 'show-reviews' airline.id %}">Отзывы</a>
+    </div>
+</div>
+
+ </div>
+
+{% endblock %}

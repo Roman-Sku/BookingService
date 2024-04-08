@@ -37,7 +37,7 @@
         <hr>
 
         <div class="text-center">
-            <h4> <p class="blog-post-meta">Авиакомпания: {{ flight.airline.airline_name }} </p> </h4>
+            <h4> <p class="blog-post-meta">Авиакомпания: <a href="{% url 'show-airline' flight.airline.id %}">{{ flight.airline.airline_name }}</a> </p> </h4>
         </div>
 
         <div>
@@ -49,7 +49,7 @@
         </div>
 
         <div>
-            <a href="https://www.aviasales.by/?params=MSQ1">{{flight.airline.website}}</a>
+            Подробнее на нашем <a href="{{ flight.airline.website }}">сайте</a>
         </div>
 
     <div>
