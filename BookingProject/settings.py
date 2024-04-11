@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+from celery.schedules import crontab
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4lj=xrt_+xrn_zd)1ut4%=ihpd-tm@$&u9ln-$x&py%9mx)rw)'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-4lj=xrt_+xrn_zd)1ut4%=ihpd-tm@$&u9ln-$x&py%9mx)rw)')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,7 +44,8 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     'rest_framework',
-#   'api.apps.ApiConfig',
+    "django_celery_beat",
+    'drf_yasg',
 ]
 
 AUTH_USER_MODEL = 'BookingApp.User'
@@ -86,10 +89,10 @@ WSGI_APPLICATION = 'BookingProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Booking',
-        'USER': 'roman',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
+        'NAME': os.environ.get('DATABASE_NAME', 'Booking'),
+        'USER': os.environ.get('DATABASE_USER', 'pg_user'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'pg_password'),
+        'HOST': os.environ.get('DATABASE_HOST'),
         "PORT": 5432,
     }
 }
@@ -131,6 +134,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -151,3 +156,15 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', "fguzviabcpksdxlg")
 
 LOGOUT_REDIRECT_URL = "/"
 LOGIN_REDIRECT_URL = "/"
+
+
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'amqp://guest:guest@')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://celery-backend:6379')
+CELERY_TIMEZONE = TIME_ZONE
+
+CELERY_BEAT_SCHEDULE = {
+    "create_periodical_flight": {
+        "task": "app.tasks.create_flight",
+        "schedule": crontab(minute="36", hour="20")
+    }
+}

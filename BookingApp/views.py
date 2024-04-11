@@ -179,6 +179,7 @@ def make_review(request: WSGIRequest, flight_id: int):
 
 
 def show_review(request: WSGIRequest, review_id: int):
+    """ Просмотр отзыва """
     review = get_object_or_404(Review, pk=review_id)
     return render(request, 'review/review.html', {'review': review})
 
@@ -190,5 +191,6 @@ def show_airline_reviews(request: WSGIRequest, airline_id: int):
 
 
 def airline_view(request: WSGIRequest, airline_id: int):
+    """ Просмотр авиакомпании """
     airline = get_object_or_404(Airline, pk=airline_id)
     return render(request, 'airline/airline_info.html', {'airline': airline})

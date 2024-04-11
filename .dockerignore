@@ -1,0 +1,11 @@
+*
+!BookingApp
+!BookingProject
+!settings
+!static
+!templates
+!Dockerfile
+!manage.py
+!poetry.lock
+!pyproject.toml
+!run.sh

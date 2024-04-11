@@ -1,0 +1,85 @@
+version: "3.10"
+
+services:
+
+  database:
+    image: postgres:16.2
+    environment:
+      POSTGRES_PASSWORD: pg_password
+      POSTGRES_USER: user
+      POSTGRES_DB: Booking
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - "./pg_data:/var/lib/postgresql/data  "
+
+  backend:
+    image: booking:0.1
+    build: .
+    command: /bin/sh run.sh
+    environment:
+      DJANGO_SECRET_KEY: "django-insecure-4lj=xrt_+xrn_zd)1ut4%=ihpd-tm@$&u9ln-$x&py%9mx)rw)"
+      DATABASE_NAME: "Booking"
+      DATABASE_USER: "user"
+      DATABASE_PASSWORD: "pg_password"
+      DATABASE_HOST: "database"
+      EMAIL_HOST_USER: "romain.skuratovitch@ya.ru"
+      DEFAULT_FROM_EMAIL: "romain.skuratovitch@ya.ru"
+      EMAIL_HOST_PASSWORD: "fguzviabcpksdxlg"
+      CELERY_RESULT_BACKEND: "redis://celery-backend:6379"
+      CELERY_BROKER_URL: "amqp://rabbit_user:rabbit_password@broker:5672/booking"
+
+    ports:
+      - "80:8000"
+
+  celery_worker_creator:
+    image: booking:0.1
+    build: .
+    command: celery -A BookingProject worker
+    environment:
+      DJANGO_SECRET_KEY: "django-insecure-4lj=xrt_+xrn_zd)1ut4%=ihpd-tm@$&u9ln-$x&py%9mx)rw)"
+      DATABASE_NAME: "Booking"
+      DATABASE_USER: "user"
+      DATABASE_PASSWORD: "pg_password"
+      DATABASE_HOST: "database"
+      EMAIL_HOST_USER: "romain.skuratovitch@ya.ru"
+      DEFAULT_FROM_EMAIL: "romain.skuratovitch@ya.ru"
+      EMAIL_HOST_PASSWORD: "fguzviabcpksdxlg"
+      CELERY_RESULT_BACKEND: "redis://celery-backend:6379"
+      CELERY_BROKER_URL: "amqp://rabbit_user:rabbit_password@broker:5672/booking"
+
+  celery-flower:
+    image: booking:0.1
+    build: .
+    command: celery -A BookingProject flower
+    environment:
+      DJANGO_SECRET_KEY: "django-insecure-4lj=xrt_+xrn_zd)1ut4%=ihpd-tm@$&u9ln-$x&py%9mx)rw)"
+      DATABASE_NAME: "Booking"
+      DATABASE_USER: "user"
+      DATABASE_PASSWORD: "pg_password"
+      DATABASE_HOST: "database"
+      EMAIL_HOST_USER: "romain.skuratovitch@ya.ru"
+      DEFAULT_FROM_EMAIL: "romain.skuratovitch@ya.ru"
+      EMAIL_HOST_PASSWORD: "fguzviabcpksdxlg"
+      CELERY_RESULT_BACKEND: "redis://celery-backend:6379"
+      CELERY_BROKER_URL: "amqp://rabbit_user:rabbit_password@broker:5672/booking"
+
+    ports:
+      - "5555:5555"
+
+  celery-backend:
+    image: redis:7.2.4-alpine
+
+  broker:
+    image: rabbitmq:3.13.0-management
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbit_user
+      RABBITMQ_DEFAULT_PASS: rabbit_password
+      RABBITMQ_DEFAULT_VHOST: booking
+
+    ports:
+      - "15672:15672"
+    volumes:
+      - "./rabbitmq:/var/lib/rabbitmq"

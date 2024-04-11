@@ -11,6 +11,14 @@ django = "^5.0.3"
 postgres = "^4.0"
 crispy-bootstrap5 = "^2024.2"
 djangorestframework = "^3.15.1"
+celery = {extras = ["amqp", "redis"], version = "^5.3.6"}
+docker = "^7.0.0"
+django-celery-beat = "^2.6.0"
+rabbitmq = "^0.2.0"
+redis = "^5.0.3"
+gunicorn = "^21.2.0"
+flower = "^2.0.1"
+drf-yasg = "^1.21.7"
 
 
 [build-system]

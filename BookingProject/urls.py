@@ -21,6 +21,7 @@ from BookingApp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include("django.contrib.auth.urls")),
+    path("api/", include("BookingApp.api.urls")),
 
     path('register/', views.register_view, name='register'),
     path('register/confirm/<id>/<token>', views.confirm_register_view, name='register-confirm'),
