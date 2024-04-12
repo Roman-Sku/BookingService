@@ -17,7 +17,7 @@ from .models import Flight, Airline, Airport, User, Order, Review
 
 def home_page_view(request: WSGIRequest):
     """ Домашняя страница """
-    flights = Flight.objects.filter(departure_date_time__gt=timezone.now())
+    flights = Flight.objects.all                 # filter(departure_date_time__gt=timezone.now())
     context: dict = {
         'flights': flights
     }

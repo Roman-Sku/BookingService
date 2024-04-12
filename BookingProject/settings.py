@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
-from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -162,9 +161,10 @@ CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'amqp://guest:guest@')
 CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://celery-backend:6379')
 CELERY_TIMEZONE = TIME_ZONE
 
+
 CELERY_BEAT_SCHEDULE = {
     "create_periodical_flight": {
-        "task": "app.tasks.create_flight",
-        "schedule": crontab(minute="36", hour="20")
+        "task": "BookingApp.tasks.create_flight",
+        "schedule": 600
     }
 }

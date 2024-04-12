@@ -19,6 +19,7 @@ redis = "^5.0.3"
 gunicorn = "^21.2.0"
 flower = "^2.0.1"
 drf-yasg = "^1.21.7"
+rabbitmq-server = "^0.0.1"
 
 
 [build-system]
